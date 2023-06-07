@@ -207,51 +207,27 @@
         "operationId": "Get flights by destination",
         "parameters": [
           {
-            "name": "citySource",
+            "name": "source",
             "in": "query",
-            "description": "the city from which user wants to flight",
-            "required": false,
+            "description": "the city or airport from which user wants to flight",
+            "required": true,
             "style": "form",
             "explode": true,
             "schema": {
               "type": "string",
-              "example": "second-city"
+              "example": "DME"
             }
           },
           {
-            "name": "cityDest",
+            "name": "destination",
             "in": "query",
-            "description": "the city where user wants to flight",
-            "required": false,
+            "description": "the city or airport where user wants to flight",
+            "required": true,
             "style": "form",
             "explode": true,
             "schema": {
               "type": "string",
-              "example": "first-city"
-            }
-          },
-          {
-            "name": "airportSource",
-            "in": "query",
-            "description": "the airport from which user wants to flight",
-            "required": false,
-            "style": "form",
-            "explode": true,
-            "schema": {
-              "type": "string",
-              "example": "first-airport"
-            }
-          },
-          {
-            "name": "airportDest",
-            "in": "query",
-            "description": "the airport where user wants to flight",
-            "required": false,
-            "style": "form",
-            "explode": true,
-            "schema": {
-              "type": "string",
-              "example": "first-airport"
+              "example": "UFA"
             }
           },
           {
@@ -330,7 +306,7 @@
             "explode": true,
             "schema": {
               "type": "string",
-              "example": "ZhoRa"
+              "example": "Ivan Ivanov"
             }
           }
         ],
@@ -397,7 +373,7 @@
             "explode": true,
             "schema": {
               "type": "string",
-              "example": "ZhoRa"
+              "example": "Ivan Ivanov"
             }
           }
         ],

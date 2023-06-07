@@ -211,7 +211,7 @@ class Postgres {
         println("left_seats = $left_seats")
 
         if (left_seats == 0) {
-            // we don't have enough seats
+            // Not enough seats
             println("we don't have enough seats")
             connection.rollback()
             connection.autoCommit = true
@@ -469,47 +469,6 @@ class Postgres {
                     tmp4 = UnitFlight(resSet.getString("tfli"), resSet.getString("tdep"),
                         resSet.getString("tarri"))
                     res.add(ParameterFlight(listOf(tmp, tmp2, tmp3, tmp4)))
-                }
-            }
-        } else if (n == 5) {
-            sqlRequest = "select distinct g.flight_no, g.arrival_airport, g.departure_airport, r.flight_no rfli, r.arrival_airport rarri, r.departure_airport rdep," +
-                    " s.flight_no sfli, s.arrival_airport sarri, s.departure_airport sdep, t.flight_no tfli, t.arrival_airport tarri, t.departure_airport tdep," +
-                    " u.flight_no ufli, u.arrival_airport uarri, u.departure_airport udep" +
-                    " from bookings.routes g" +
-                    "         left join bookings.routes r" +
-                    "                   on g.arrival_airport = r.departure_airport and r.arrival_airport != g.departure_airport" +
-                    "         left join bookings.routes s" +
-                    "                   on r.arrival_airport = s.departure_airport and r.arrival_airport != g.departure_airport and" +
-                    "                           s.arrival_airport != r.departure_airport " +
-                    "         left join bookings.routes t" +
-                    "                   on s.arrival_airport = t.departure_airport and r.arrival_airport != g.departure_airport and" +
-                    "                      s.arrival_airport != r.departure_airport and t.arrival_airport != s.departure_airport" +
-                    "         left join bookings.routes u" +
-                    "                   on u.arrival_airport = t.departure_airport and r.arrival_airport != g.departure_airport and" +
-                    "                      s.arrival_airport != r.departure_airport and t.arrival_airport != s.departure_airport and" +
-                    "                    u.arrival_airport != t.departure_airport" +
-                    " where g.departure_airport = '$airport_code_dest'" +
-                    "  and u.arrival_airport = '$airport_code_arrival';"
-            val statement = connection.createStatement()
-            statement.use {
-                val resSet = it.executeQuery(sqlRequest)
-                var tmp: UnitFlight
-                var tmp2: UnitFlight
-                var tmp3: UnitFlight
-                var tmp4: UnitFlight
-                var tmp5: UnitFlight
-                while(resSet.next()) {
-                    tmp = UnitFlight(resSet.getString("flight_no"), resSet.getString("departure_airport"),
-                        resSet.getString("arrival_airport"))
-                    tmp2 = UnitFlight(resSet.getString("rfli"), resSet.getString("rdep"),
-                        resSet.getString("rarri"))
-                    tmp3 = UnitFlight(resSet.getString("sfli"), resSet.getString("sdep"),
-                        resSet.getString("sarri"))
-                    tmp4 = UnitFlight(resSet.getString("tfli"), resSet.getString("tdep"),
-                        resSet.getString("tarri"))
-                    tmp5 = UnitFlight(resSet.getString("ufli"), resSet.getString("udep"),
-                        resSet.getString("uarri"))
-                    res.add(ParameterFlight(listOf(tmp, tmp2, tmp3, tmp4, tmp5)))
                 }
             }
         }

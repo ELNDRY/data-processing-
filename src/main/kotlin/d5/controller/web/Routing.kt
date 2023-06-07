@@ -69,20 +69,45 @@ fun Application.configureRouting() {
         }
 
         get("api/v1/flights") {
-            val airportSource = call.parameters["airportSource"]
-            val airportDest = call.parameters["airportDest"]
-//            val citySource = call.parameters["citySource"]
-//            val cityDest = call.parameters["cityDest"]
+            var source = call.parameters["source"]
+            var dest = call.parameters["destination"]
             val upperBound = call.parameters["bound"]
+
+            if (source.isNullOrEmpty()) {
+                call.respond(HttpStatusCode.BadRequest, "Write the source")
+                return@get
+            }
+
+            if (dest.isNullOrEmpty()) {
+                call.respond(HttpStatusCode.BadRequest, "Write the destination")
+                return@get
+            }
 
             try {
                 upperBound?.toInt()
             } catch (e: Exception) {
-                call.respond(HttpStatusCode.BadRequest, "Amount of peresadky cannot be not int")
+                call.respond(HttpStatusCode.BadRequest, "Amount of transfers should be int")
                 return@get
             }
 
-            val result = service.getFlightsByAirport(airportSource!!, airportDest!!, upperBound?.toInt() ?: 1)
+            val result : MutableList<ParameterFlight> = ArrayList()
+            if (source == "Уфа") {
+                source = "UFA"
+            }
+
+            if (dest == "Уфа") {
+                dest = "UFA"
+            }
+
+            if (source.length == 3 && dest.length == 3) {
+                result.addAll(service.getFlightsByAirport(source, dest, upperBound?.toInt() ?: 1))
+            } else if (source.length == 3 && dest.length != 3) {
+                result.addAll(service.getFlightsByAirportAndCity(source, dest, upperBound?.toInt() ?: 1))
+            } else if (source.length != 3 && dest.length == 3) {
+                result.addAll(service.getFlightsByCityAndAirport(source, dest, upperBound?.toInt() ?: 1))
+            } else {
+                result.addAll(service.getFlightsByCityAndCity(source, dest, upperBound?.toInt() ?: 1))
+            }
 
             if (result.isEmpty()) {
                 call.respond(HttpStatusCode.BadRequest, "There's no flight according to these parameters")

@@ -40,6 +40,18 @@ class Usercase(
         return res
     }
 
+    fun getFlightsByCityAndCity(source: String, dest: String, n: Int = 1): List<ParameterFlight> {
+        val airports1 = database.getAllAirports(source)
+        val airports2 = database.getAllAirports(dest)
+        val res : MutableList<ParameterFlight> = mutableListOf()
+        airports1.map { s ->
+            airports2.map{ d ->
+                res.addAll(database.getFlightsByAirports(s.id, d.id, n))
+            }
+        }
+        return res
+    }
+
     fun getFlightsByCityAndAirport(source: String, dest: String, n: Int = 1) : List<ParameterFlight> {
         val airports = database.getAllAirports(source)
         val res : MutableList<ParameterFlight> = mutableListOf()
